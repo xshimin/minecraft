@@ -1,0 +1,73 @@
+version: "3.8"
+
+services:
+  # Application
+  minecraft:
+    image: itzg/minecraft-server
+    ports:
+      - 25565:25565
+      - 28016:28016
+    environment:
+      SERVER_PORT: 25565
+      RCON_PORT: 28016
+      EULA: "TRUE"
+      MEMORY: 4G
+      ENABLE_RCON: "true"
+      RCON_PASSWORD: "testing" # FIXME
+      REPLACE_ENV_VARIABLES: "TRUE"
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
+      # Whitelist Players
+      WHITELIST: "username" # FIXME
+      # Op/Administrator Players
+      OPS: "username" # FIXME
+      # define an optional prefix for your env variables you want to replace
+      ENV_VARIABLE_PREFIX: "CFG_"
+      # and here are the actual variables
+      CFG_DB_HOST: "http://localhost:3306"
+      CFG_DB_NAME: "minecraft"
+      CFG_DB_PASSWORD_FILE: "/run/secrets/db_password"
+    volumes:
+      - ./data:/data
+      - /etc/timezone:/etc/timezone:ro
+    tty: true
+    stdin_open: true
+    restart: always
+    deploy:
+      resources:
+        limits:
+          memory: 5G # limits.memory = environment.MEMORY * 1.25
+
+  ## This lets you run the rcon-web-admin administration tool as a Docker container
+  rcon:
+    image: itzg/rcon
+    ports:
+      - "4326:4326"
+      - "4327:4327"
+    environment:
+      RWA_USERNAME: admin
+      RWA_PASSWORD: "testing" # FIXME
+      RWA_ADMIN: "TRUE"
+      RWA_RCON_HOST: minecraft
+      RWA_RCON_PORT: 28016
+      RWA_RCON_PASSWORD: "testing" # FIXME
+    volumes:
+      - "./rcon:/opt/rcon-web-admin/db"
+
+  # Backup
+  backup:
+    image: itzg/mc-backup
+    depends_on:
+    - minecraft
+    volumes:
+      - ./data:/data:ro
+      - ./mc-backups:/backups
+      - /etc/timezone:/etc/timezone:ro
+    network_mode: "service:minecraft"
+    environment:
+      BACKUP_INTERVAL: "1h"
+      RCON_PORT: 28016
+      RCON_PASSWORD: "testing" # FIXME
+
+secrets:
+  db_password:
+    file: ./db_password

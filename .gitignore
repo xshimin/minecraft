@@ -1,0 +1,5 @@
+data/
+mc-backups/
+rcon/
+*password
+__pycache__/
