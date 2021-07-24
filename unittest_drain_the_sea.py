@@ -187,7 +187,11 @@ class Test_deploy_torch(unittest.TestCase):
             + "unless block {x} {negative_y} {z} {target_block} "
             + "run fill {x} {y} {z} {x} {y} {z} {deploy_block} {deploy_mode}")
         expected_result = expected_run_command.format(
-                                x=8, y=11, negative_y=10, z=12, target_block="minecraft:air", deploy_block="minecraft:torch", deploy_mode="replace"
+                                x=8, y=11, negative_y=10, z=12,
+                                target_block="minecraft:air",
+                                deploy_block="minecraft:torch", 
+                                water_block  = "minecraft:water",
+                                deploy_mode="replace"
                             )
         actually_result = drain_the_sea.deploy_torch(start_x, start_y, start_z, inc_x, inc_y, inc_z)
         
@@ -208,9 +212,14 @@ class Test_deploy_torch(unittest.TestCase):
             + "if block {x} {y} {z} {target_block} "
             + "unless block {x} {negative_y} {z} {deploy_block} "
             + "unless block {x} {negative_y} {z} {target_block} "
+            + "unless block {x} {negative_y} {z} {water_block} "
             + "run fill {x} {y} {z} {x} {y} {z} {deploy_block} {deploy_mode}")
         expected_result = expected_run_command.format(
-                                x=8, y=11, negative_y=10, z=12, target_block="minecraft:air", deploy_block="minecraft:torch", deploy_mode="destroy"
+                                x=8, y=11, negative_y=10, z=12,
+                                target_block="minecraft:air",
+                                eploy_block="minecraft:torch",
+                                water_block="minecraft:water",
+                                deploy_mode="destroy"
                             )
         actually_result = drain_the_sea.deploy_torch(start_x, start_y, start_z, inc_x, inc_y, inc_z, deploy_mode)
         

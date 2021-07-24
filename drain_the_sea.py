@@ -70,10 +70,12 @@ def _filter_list(start, end, denominator) -> list:
 # (1) 対象ブロックが空気ブロックであること
 # (2) 対象ブロックのY座標-1ブロックが松明以外であること
 # (3) 対象ブロックのY座標-1ブロックが空気ブロック以外であること
+# (4) 対象ブロックのY座標-1ブロックが水ブロック以外であること
 def deploy_torch(start_x, start_y, start_z, inc_x, inc_y, inc_z, deploy_mode="replace"):
     end_x, end_y, end_z       = start_x + inc_x, start_y + inc_y, start_z + inc_z
     target_block = "minecraft:air"
     deploy_block = "minecraft:torch"
+    water_block  = "minecraft:water"
     command_base = (
         "execute "
         # 条件(1)
@@ -82,6 +84,8 @@ def deploy_torch(start_x, start_y, start_z, inc_x, inc_y, inc_z, deploy_mode="re
         + "unless block {x} {negative_y} {z} {deploy_block} "
         # AND 条件(3)
         + "unless block {x} {negative_y} {z} {target_block} "
+        # AND 条件(4)
+        + "unless block {x} {negative_y} {z} {water_block} "
         # ブロック配置
         + "run fill {x} {y} {z} {x} {y} {z} {deploy_block} {deploy_mode}")
     mcrwrap = MCRconWrapper()
@@ -93,7 +97,8 @@ def deploy_torch(start_x, start_y, start_z, inc_x, inc_y, inc_z, deploy_mode="re
                     x=x, y=y, negative_y=negative_y, z=z,
                     target_block = target_block,
                     deploy_block = deploy_block,
-                    deploy_mode = deploy_mode
+                    deploy_mode = deploy_mode,
+                    water_block = water_block
                 )
                 mcrwrap.run_command(run_command)
     mcrwrap.disconnect()
