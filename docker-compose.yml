@@ -8,6 +8,8 @@ services:
       - 25565:25565
       - 28016:28016
     environment:
+      # Server configuration
+      OVERRIDE_SERVER_PROPERTIES: "TRUE"
       SERVER_PORT: 25565
       RCON_PORT: 28016
       EULA: "TRUE"
@@ -15,17 +17,23 @@ services:
       ENABLE_RCON: "true"
       RCON_PASSWORD: "testing" # FIXME
       REPLACE_ENV_VARIABLES: "TRUE"
-      OVERRIDE_SERVER_PROPERTIES: "TRUE"
-      # Whitelist Players
+      # - Game Mode
+      MODE: "survival"
+      # - Difficulty
+      DIFFICULTY: "normal"
+      # - Whitelist Players
       WHITELIST: "username" # FIXME
-      # Op/Administrator Players
+      # - Op/Administrator Players
       OPS: "username" # FIXME
-      # define an optional prefix for your env variables you want to replace
-      ENV_VARIABLE_PREFIX: "CFG_"
-      # and here are the actual variables
-      CFG_DB_HOST: "http://localhost:3306"
-      CFG_DB_NAME: "minecraft"
-      CFG_DB_PASSWORD_FILE: "/run/secrets/db_password"
+      OP_PERMISSION_LEVEL: 4
+      FUNCTION_PERMISSION_LEVEL: 4
+      ALLOW_CHEATS: "false"
+      # # define an optional prefix for your env variables you want to replace
+      # ENV_VARIABLE_PREFIX: "CFG_"
+      # # and here are the actual variables
+      # CFG_DB_HOST: "http://localhost:3306"
+      # CFG_DB_NAME: "minecraft"
+      # CFG_DB_PASSWORD_FILE: "/run/secrets/db_password"
     volumes:
       - ./data:/data
       - /etc/timezone:/etc/timezone:ro
@@ -68,6 +76,6 @@ services:
       RCON_PORT: 28016
       RCON_PASSWORD: "testing" # FIXME
 
-secrets:
-  db_password:
-    file: ./db_password
+# secrets:
+#   db_password:
+#     file: ./db_password
