@@ -8,6 +8,8 @@ services:
       - 25565:25565
       - 28016:28016
     environment:
+      # Minecraft version
+      VERSION: 1.17.1
       # Server configuration
       OVERRIDE_SERVER_PROPERTIES: "TRUE"
       SERVER_PORT: 25565
